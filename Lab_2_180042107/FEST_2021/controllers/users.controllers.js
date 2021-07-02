@@ -1,43 +1,88 @@
-const getLogin = (req,res)=>{
-    res.render("users/login.ejs");
-}
+const User = require("../models/User.model");
+const bcrypt = require("bcryptjs");
+const passport = require("passport");
 
-const postLogin = (req,res)=>{
-    const {email,password} = req.body;
-    console.log(email);
-    console.log(password);
-}
+const getLogin = (req, res) => {
+  res.render("users/login.ejs", { error: req.flash("error") });
+};
 
-const getRegister = (req,res)=>{
-    res.render("users/register.ejs");
-}
+const postLogin = (req, res, next) => {
+  passport.authenticate("local", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/users/login",
+    failureFlash: true,
+  })(req, res, next);
+};
 
-const postRegister = (req,res)=>{
-    const {name, email, password, confirm_password} = req.body;
-    console.log(name);
-    console.log(email);
-    console.log(password);
-    console.log(confirm_password);
+const getRegister = (req, res) => {
+  res.render("users/register.ejs", { errors: req.flash("errors") });
+};
 
-    const errors = []
-    if(!name || !email || !password || !confirm_password){
-        errors.push("All fileds are required");
-    }
-    if(password.length<6){
-        errors.push("Password should be atleast 6 characters")
-    }
-    if(password !== confirm_password){
-        errors.push("Passwords do not match");
-    }
-    if(errors.length>0)
-    {
-        console.log(errors);
-    }else{
-        res.redirect("users/login");
-    }
+const postRegister = (req, res) => {
+  const { name, email, password, confirm_password } = req.body;
 
-}
+  //Data Validation
+  const errors = [];
+  if (!name || !email || !password || !confirm_password) {
+    errors.push("All fields are required!");
+  }
+  if (password.length < 6) {
+    errors.push("Password must be at least 6 characters!");
+  }
+  if (password !== confirm_password) {
+    errors.push("Passwords do not match!");
+  }
+
+  if (errors.length > 0) {
+    req.flash("errors", errors);
+    res.redirect("/users/register");
+  } else {
+    //Create New User
+    User.findOne({ email: email }).then((user) => {
+      if (user) {
+        errors.push("User already exists with this email!");
+        req.flash("errors", errors);
+        res.redirect("/users/register");
+      } else {
+        bcrypt.genSalt(10, (err, salt) => {
+          if (err) {
+            errors.push(err);
+            req.flash("errors", errors);
+            res.redirect("/users/register");
+          } else {
+            bcrypt.hash(password, salt, (err, hash) => {
+              if (err) {
+                errors.push(err);
+                req.flash("errors", errors);
+                res.redirect("/users/register");
+              } else {
+                const newUser = new User({
+                  name,
+                  email,
+                  password: hash,
+                });
+                newUser
+                  .save()
+                  .then(() => {
+                    res.redirect("/users/login");
+                  })
+                  .catch(() => {
+                    errors.push("Saving User to the daatabase failed!");
+                    req.flash("errors", errors);
+                    res.redirect("/users/register");
+                  });
+              }
+            });
+          }
+        });
+      }
+    });
+  }
+};
 
 module.exports = {
-    getLogin,getRegister,postLogin,postRegister
-}
+  getLogin,
+  getRegister,
+  postLogin,
+  postRegister,
+};
