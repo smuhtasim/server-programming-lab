@@ -8,7 +8,11 @@ app.use(express.static('public'));
 app.set("view engine", "ejs");
 
 //Routes
+const userRoutes = require("./routes/users.routes");
 const indexRoutes = require("./routes/index.routes");
 app.use(indexRoutes);
+app.use("/users", userRoutes);
+
+app.use(express.urlencoded({ extended : false }))
 
 module.exports = app;
