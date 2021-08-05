@@ -15,3 +15,5 @@ const deleteMO = (req,res) => {
     console.log(id);
     res.render("math-olympiad/list.ejs");
 }
+
+module.exports = {getMO, postMO, getMOList, deleteMO};
