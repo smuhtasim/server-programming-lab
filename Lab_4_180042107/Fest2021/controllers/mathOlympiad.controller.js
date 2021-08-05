@@ -1,7 +1,7 @@
 const MathOlympiad = require("../models/MathOlympiad.model");
 
 const getMO = (req,res) => {
-    res.render("math-olympiad/register.ejs");
+    res.render("math-olympiad/register.ejs", {error: req.flash("error")});
 }
 
 const postMO = (req,res) => {
@@ -50,7 +50,6 @@ const postMO = (req,res) => {
             .save()
             .then(() => {
               error = "Participant has been registered successfully!";
-              console.log(error);
               req.flash("error", error);
               res.redirect("/MathOlympiad/register");
             })
@@ -63,14 +62,41 @@ const postMO = (req,res) => {
       });
 }
 
-const getMOList = (req,res) => {
-    res.render("math-olympiad/list.ejs");
-}
+const getMOList = (req, res) => {
+    let all_participant = [];
+    let error = "";
+    MathOlympiad.find()
+      .then((data) => {
+        all_participant = data;
+        res.render("math-olympiad/list.ejs", {
+          error: req.flash("error"),
+          participants: all_participant,
+        });
+      })
+      .catch(() => {
+        error = "Failed to fetch data!";
+        res.render("math-olympiad/list.ejs", {
+          error: req.flash("error", error),
+          participants: all_participant,
+        });
+      });
+  };
 
-const deleteMO = (req,res) => {
-    const id = req.params.id;
-    console.log(id);
-    res.render("math-olympiad/list.ejs");
-}
+const deleteMO = (req, res) => {
+  const id = req.params.id;
+  let error = "";
+
+  MathOlympiad.deleteOne({ _id: req.params.id })
+    .then(() => {
+      error = "Data has been deleted successfully!";
+      req.flash("error", error);
+      res.redirect("/MathOlympiad/list");
+    })
+    .catch(() => {
+      error = "Failed to delete data!";
+      req.flash("error", error);
+      res.redirect("/MathOlympiad/list");
+    });
+};
 
 module.exports = {getMO, postMO, getMOList, deleteMO};
