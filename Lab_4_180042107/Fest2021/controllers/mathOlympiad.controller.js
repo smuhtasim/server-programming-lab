@@ -29,22 +29,38 @@ const postMO = (req,res) => {
     const paid = 0;
     const selected = false;
 
-    MathOlympiad.findOne({name:name,contact:contact,}).then((participant)=>{
-        if(participant) {
-            error = "Participant with same name and contact info already exists!";
-            console.log(error);
-            res.redirect("MathOlympiad/register");
-        }else{
-            const participant = new MathOlympiad({name,category, contact, tshirt, email, institution, paid, total, selected})
+    MathOlympiad.findOne({ name: name, contact: contact }).then((participant) => {
+        if (participant) {
+          error = "Participant with this name and contact no. already exists!";
+          req.flash("error", error);
+          res.redirect("/MathOlympiad/register");
+        } else {
+          const participant = new MathOlympiad({
+            name,
+            category,
+            contact,
+            email,
+            institution,
+            paid,
+            total,
+            selected,
+            tshirt,
+          });
+          participant
+            .save()
+            .then(() => {
+              error = "Participant has been registered successfully!";
+              console.log(error);
+              req.flash("error", error);
+              res.redirect("/MathOlympiad/register");
+            })
+            .catch(() => {
+              error = "An unexpected error occured!";
+              req.flash("error", error);
+              res.redirect("/MathOlympiad/register");
+            });
         }
-        participant.save().then(() => {error = "Participant has been registered succesfully";
-                                       console.log(error);
-                                       res.redirect("MathOlympiad/Register");
-                    }).catch(()=>   {error = "An unexpected error occured while registering";
-                                    console.log(error);
-                                    res.redirect("MathOlympiad/Register");});
-    })
-    res.render("math-olympiad/register.ejs");
+      });
 }
 
 const getMOList = (req,res) => {
