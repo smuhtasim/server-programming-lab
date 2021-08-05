@@ -99,4 +99,30 @@ const deleteMO = (req, res) => {
     });
 };
 
-module.exports = {getMO, postMO, getMOList, deleteMO};
+const paymentDoneMO = (req, res) => {
+    const id = req.params.id;
+    let error = "";
+  
+    MathOlympiad.findOne({ _id: id })
+      .then((participant) => {
+        const total = participant.total;
+        MathOlympiad.findByIdAndUpdate({ _id: id }, { paid: total }, (err) => {
+          if (err) {
+            error = "Data could not be updated!";
+            req.flash("error", error);
+            res.redirect("/MathOlympiad/list");
+          } else {
+            error = "Payment completed successfully!";
+            req.flash("error", error);
+            res.redirect("/MathOlympiad/list");
+          }
+        });
+      })
+      .catch(() => {
+        error = "Data could not be updated!";
+        req.flash("error", error);
+        res.redirect("/MathOlympiad/list");
+      });
+  };
+
+module.exports = {getMO, postMO, getMOList, deleteMO,paymentDoneMO};
