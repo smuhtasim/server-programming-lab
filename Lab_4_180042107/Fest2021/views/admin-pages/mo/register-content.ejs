@@ -18,7 +18,7 @@
           </div>
           <div class="x_content">
             <br />
-            <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+            <form method = "POST" action="/MathOlympiad/register" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
 
               <div class="item form-group">
                 <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Name <span class="required">*</span>
@@ -48,6 +48,33 @@
                   <input type="text" id="institution" name="institution" required="required" class="form-control ">
                 </div>
               </div>
+              <div class="item form-group">
+                <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Category <span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 ">
+                  <select class="form-control" id="category" name="category">
+                    <option disabled>--- Choose option ---</option>
+                    <option value="School">School</option>
+                    <option value="College">College</option>
+                    <option value="University">University</option>
+                    
+                  </select>
+                </div>
+              </div>
+              <div class="item form-group">
+                <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">T-shirt <span class="required">*</span>
+                </label>
+                <div class="col-md-6 col-sm-6 ">
+                  <select class="form-control" id="tshirt" name="tshirt">
+                    <option disabled>--- Choose option ---</option>
+                    <option value="M">Medium</option>
+                    <option value="L">Large</option>
+                    <option value="XL">Extra Large</option>
+                    
+                  </select>
+                </div>
+              </div>
+          
               <div class="ln_solid"></div>
               <div class="item form-group">
                 <div class="col-md-6 col-sm-6 offset-md-3">

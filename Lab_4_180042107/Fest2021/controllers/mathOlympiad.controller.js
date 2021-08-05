@@ -5,6 +5,13 @@ const getMO = (req,res) => {
 }
 
 const postMO = (req,res) => {
+    const {name,email,contact,category,tshirt,institution} = req.body;
+    console.log(name);
+    console.log(email);
+    console.log(contact);
+    console.log(category);
+    console.log(tshirt);
+    console.log(institution);
     res.render("math-olympiad/register.ejs");
 }
 
