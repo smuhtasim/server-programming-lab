@@ -25,7 +25,7 @@ const postPC = (req, res) => {
     TM2tshirt,
   } = req.body;
 
-  const total = 800;
+  const total = 1000;
   const paid = 0;
   const selected = false;
   let error = "";
