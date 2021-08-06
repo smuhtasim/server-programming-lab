@@ -51,6 +51,6 @@ const PCRoutes = require("./routes/programmingContest.routes");
 app.use(indexRoutes);
 app.use("/users", userRoutes);
 app.use("/MathOlympiad", MORoutes);
-app.use("/ProgrammingContest", PCRoutes);
+app.use("/programming-contest", PCRoutes);
 
 module.exports = app;

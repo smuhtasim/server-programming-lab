@@ -63,7 +63,7 @@ const postPC = (req, res) => {
         participant
           .save()
           .then(() => {
-            error = "Team has been registered successfully!";
+            error = "The team has been registered successfully!!";
             req.flash("error", error);
             res.redirect("/programming-contest/register");
           })
@@ -84,14 +84,14 @@ const getPCList = (req, res) => {
   ProgContest.find()
     .then((data) => {
       all_participant = data;
-      res.render("prog-contest/teamList.ejs", {
+      res.render("programming-contest/teamList.ejs", {
         error: req.flash("error"),
         participants: all_participant,
       });
     })
     .catch(() => {
       error = "Failed to fetch data";
-      res.render("prog-contest/teamList.ejs", {
+      res.render("programming-contest/teamList.ejs", {
         error: req.flash("error", error),
         participants: all_participant,
       });
