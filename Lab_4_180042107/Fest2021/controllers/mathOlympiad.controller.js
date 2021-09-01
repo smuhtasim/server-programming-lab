@@ -1,4 +1,28 @@
 const MathOlympiad = require("../models/MathOlympiad.model");
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service : "hotmail",
+  auth: {
+    user:"matholympiad.iut@outlook.com",
+    pass:"srijon007"
+  }
+});
+
+const options = {
+  from: "matholympiad.iut@outlook.com",
+  to: "srijonmuhtasim@gmail.com",
+  subject: "OLa",
+  text: "ola hello"
+}
+
+transporter.sendMail(options, function(err,info){
+  if(err){
+    console.log(err);
+    return;
+  }
+  console.log("sent"+info.response)
+})
 
 const getMO = (req,res) => {
     res.render("math-olympiad/register.ejs", {error: req.flash("error")});
