@@ -67,7 +67,7 @@ const postMO = (req,res) => {
                 from: "matholympiad.iut@outlook.com",
                 to: email,
                 subject: "Congratulations on getting selected in MathOlympiad, IUT",
-                text: "Your team has been selected. This is your unique ID "+key+"."
+                text: "You have been selected. This is your unique ID "+key+"."
               }
               
               transporter.sendMail(options, function(err,info){
