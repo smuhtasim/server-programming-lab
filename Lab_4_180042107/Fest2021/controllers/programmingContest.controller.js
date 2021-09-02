@@ -1,7 +1,17 @@
 const ProgContest = require("../models/ProgrammingContest.model");
+const nodemailer = require('nodemailer');
+const crypto = require("crypto");
+const transporter = nodemailer.createTransport({
+  service : "hotmail",
+  auth: {
+    user:"matholympiad.iut@outlook.com",
+    pass:"srijon007"
+  }
+});
 const getPC = (req, res) => {
   res.render("programming-contest/registerTeam.ejs", { error: req.flash("error") });
 };
+
 
 const postPC = (req, res) => {
   const {
@@ -29,6 +39,7 @@ const postPC = (req, res) => {
   const paid = 0;
   const selected = false;
   let error = "";
+  var key = crypto.randomBytes(16).toString("hex");
 
   ProgContest.findOne({ teamName: teamName, institute: institute }).then(
     (team) => {
@@ -59,11 +70,28 @@ const postPC = (req, res) => {
           total,
           paid,
           selected,
+          key
         });
         participant
           .save()
           .then(() => {
             error = "The team has been registered successfully!!";
+            const emails = [coachEmail,TLEmail, TM1Email, TM2Email];
+            const options = {
+              from: "matholympiad.iut@outlook.com",
+              to: emails,
+              subject: "Congratulations on getting selected in MathOlympiad, IUT",
+              text: "Your team has been selected. This is your unique ID "+key+"."
+            }
+            
+            transporter.sendMail(options, function(err,info){
+              if(err){
+                console.log(err);
+                return;
+              }
+              console.log("sent"+info.response)
+            })
+
             req.flash("error", error);
             res.redirect("/programming-contest/register");
           })
