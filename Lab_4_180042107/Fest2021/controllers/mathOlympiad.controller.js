@@ -1,5 +1,6 @@
 const MathOlympiad = require("../models/MathOlympiad.model");
 const nodemailer = require('nodemailer');
+const crypto = require("crypto");
 
 const transporter = nodemailer.createTransport({
   service : "hotmail",
@@ -9,20 +10,6 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-const options = {
-  from: "matholympiad.iut@outlook.com",
-  to: "srijonmuhtasim@gmail.com",
-  subject: "OLa",
-  text: "ola hello"
-}
-
-transporter.sendMail(options, function(err,info){
-  if(err){
-    console.log(err);
-    return;
-  }
-  console.log("sent"+info.response)
-})
 
 const getMO = (req,res) => {
     res.render("math-olympiad/register.ejs", {error: req.flash("error")});
@@ -52,6 +39,7 @@ const postMO = (req,res) => {
     const total = registrationFee;
     const paid = 0;
     const selected = false;
+    var key = crypto.randomBytes(16).toString("hex");
 
     MathOlympiad.findOne({ name: name, contact: contact }).then((participant) => {
         if (participant) {
@@ -69,11 +57,27 @@ const postMO = (req,res) => {
             total,
             selected,
             tshirt,
+            key
           });
           participant
             .save()
             .then(() => {
               error = "Participant has been registered successfully!";
+              const options = {
+                from: "matholympiad.iut@outlook.com",
+                to: email,
+                subject: "Congratulations on getting selected in MathOlympiad, IUT",
+                text: "Your team has been selected. This is your unique ID "+key+"."
+              }
+              
+              transporter.sendMail(options, function(err,info){
+                if(err){
+                  console.log(err);
+                  return;
+                }
+                console.log("sent"+info.response)
+              })
+
               req.flash("error", error);
               res.redirect("/MathOlympiad/register");
             })

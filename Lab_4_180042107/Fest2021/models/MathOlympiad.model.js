@@ -40,6 +40,11 @@ const MOschema = new mongoose.Schema({
     tshirt:{
         type:String,
         required:true
+    },
+    key:{
+        type:String,
+        required:true,
+        unique:true
     }
 })
 
